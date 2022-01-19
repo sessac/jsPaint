@@ -53,44 +53,62 @@ function handleCanvasClick() {
   }
 }
 
-if (canvas) {
-  canvas.addEventListener("mousemove", onMouseMove);
-  canvas.addEventListener("mousedown", startPaintion);
-  canvas.addEventListener("mouseup", stopPainting);
-  canvas.addEventListener("mouseout", stopPainting);
-  canvas.addEventListener("click", handleCanvasClick);
+function handleCM(event) {
+  event.preventDefault();
 }
 
-Array.from(colors).forEach((color) =>
-  color.addEventListener("click", handleColorClick)
-);
+function handleModeButton() {
+  if (filling === true) {
+    filling = false;
+    modeButton.innerHTML = "Fill";
+    modeButton.style.backgroundColor = "white";
+    modeButton.style.color = "black";
+  } else {
+    filling = true;
+    modeButton.innerHTML = "Paint";
+    modeButton.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
+    modeButton.style.color = "white";
+  }
+}
 
 function changeRange(event) {
   const currentRange = event.target.value;
   ctx.lineWidth = currentRange;
 }
 
+function handleNewButton() {
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+}
+
+function handleSaveButton() {
+  const image = canvas.toDataURL();
+  const link = document.createElement("a");
+  link.href = image;
+  link.download = "paint";
+  link.click();
+}
+
+if (canvas) {
+  canvas.addEventListener("mousemove", onMouseMove);
+  canvas.addEventListener("mousedown", startPaintion);
+  canvas.addEventListener("mouseup", stopPainting);
+  canvas.addEventListener("mouseout", stopPainting);
+  canvas.addEventListener("click", handleCanvasClick);
+  canvas.addEventListener("contextmenu", handleCM);
+}
+
+Array.from(colors).forEach((color) =>
+  color.addEventListener("click", handleColorClick)
+);
+
 if (range) {
   range.addEventListener("input", changeRange);
 }
 
-function handleNewButton() {
-  ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+if (newButton) {
+  newButton.addEventListener("click", handleNewButton);
 }
-
-newButton.addEventListener("click", handleNewButton);
-
-function handleModeButton() {
-  if (filling === true) {
-    filling = false;
-    modeButton.innerHTML = "Fill";
-  } else {
-    filling = true;
-    modeButton.innerHTML = "Paint";
-  }
-}
-
-function handleSaveButton() {}
 
 if (modeButton) {
   modeButton.addEventListener("click", handleModeButton);
